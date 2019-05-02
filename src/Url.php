@@ -8,6 +8,8 @@ use Icinga\Exception\ProgrammingError;
 use Icinga\Web\Url as WebUrl;
 use Icinga\Web\UrlParams;
 use InvalidArgumentException;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 use RuntimeException;
 
 /**
@@ -64,6 +66,22 @@ class Url extends WebUrl
 
         $self->setParams($params);
         return $self;
+    }
+
+    public static function fromUri(UriInterface $uri)
+    {
+        $query = $uri->getQuery();
+        $path = $uri->getPath();
+        if (\strlen($query)) {
+            $path .= "?$query";
+        }
+
+        return static::fromPath($path);
+    }
+
+    public static function fromServerRequest(ServerRequestInterface $request)
+    {
+        return static::fromUri($request->getUri());
     }
 
     /**
