@@ -8,6 +8,7 @@ use gipfl\Translation\TranslationHelper;
 use gipfl\IcingaWeb2\Controller\Extension\ControlsAndContentHelper;
 use gipfl\IcingaWeb2\Widget\ControlsAndContent;
 use gipfl\IcingaWeb2\Zf1\SimpleViewRenderer;
+use GuzzleHttp\Psr7\ServerRequest;
 use Icinga\Application\Benchmark;
 use Icinga\Application\Icinga;
 use Icinga\Application\Modules\Manager;
@@ -23,6 +24,7 @@ use Icinga\Web\UrlParams;
 use Icinga\Web\Url as WebUrl;
 use Icinga\Web\Window;
 use InvalidArgumentException;
+use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Zend_Controller_Action;
 use Zend_Controller_Action_HelperBroker as ZfHelperBroker;
@@ -225,6 +227,14 @@ class CompatController extends Zend_Controller_Action implements ControlsAndCont
                 $this->_response->setHeader('X-Icinga-WindowId', Window::generateId());
             }
         }
+    }
+
+    /**
+     * @return ServerRequestInterface
+     */
+    protected function getServerRequest()
+    {
+        return ServerRequest::fromGlobals();
     }
 
     protected function getRequestHeader($key, $default = null)
