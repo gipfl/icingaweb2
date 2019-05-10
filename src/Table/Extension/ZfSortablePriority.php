@@ -1,6 +1,6 @@
 <?php
 
-namespace dipl\Web\Table\Extension;
+namespace gipfl\IcingaWeb2\Table\Extension;
 
 use gipfl\IcingaWeb2\Table\ZfQueryBasedTable;
 use gipfl\IcingaWeb2\IconHelper;
@@ -221,6 +221,9 @@ trait ZfSortablePriority
 
     protected function renderWithSortableForm()
     {
+        if ($this->request === null) {
+            return parent::render();
+        }
         $this->reallyHandleSortPriorityActions();
 
         $url = $this->request->getUrl();
