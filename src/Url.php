@@ -19,8 +19,6 @@ use RuntimeException;
  * Little code from Icinga\Web\Url has been duplicated, as neither fromPath()
  * nor getRequest() can be extended in a meaningful way at the time of this
  * writing
- *
- * @package dipl\Web
  */
 class Url extends WebUrl
 {

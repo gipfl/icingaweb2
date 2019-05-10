@@ -1,6 +1,6 @@
 <?php
 
-namespace dipl\Web\Widget;
+namespace gipfl\IcingaWeb2\Widget;
 
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
