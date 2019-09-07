@@ -34,10 +34,10 @@ class Url extends WebUrl
             $request = static::getRequest();
         }
 
-        if (! is_string($url)) {
+        if (! \is_string($url)) {
             throw new InvalidArgumentException(sprintf(
                 'url "%s" is not a string',
-                $url
+                \var_export($url, 1)
             ));
         }
 
@@ -47,7 +47,7 @@ class Url extends WebUrl
             return $self->setPath($url);
         }
 
-        $parts = parse_url($url);
+        $parts = \parse_url($url);
 
         $self->setBasePath($request->getBaseUrl());
         if (isset($parts['path'])) {
@@ -100,7 +100,7 @@ class Url extends WebUrl
         }
 
         $url = new Url();
-        $url->setPath(ltrim($request->getPathInfo(), '/'));
+        $url->setPath(\ltrim($request->getPathInfo(), '/'));
         $request->getQuery();
 
         // $urlParams = UrlParams::fromQueryString($request->getQuery());
