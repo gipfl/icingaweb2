@@ -11,7 +11,7 @@ class ActionBar extends BaseHtmlElement
     /** @var string */
     protected $tag = 'div';
 
-    protected $defaultAttributes = ['class' => 'incubator-action-bar'];
+    protected $defaultAttributes = ['class' => 'gipfl-action-bar'];
 
     /**
      * @param  string $target
