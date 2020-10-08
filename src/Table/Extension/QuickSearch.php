@@ -32,7 +32,7 @@ trait QuickSearch
 
         $form = Html::tag('form', [
             'action' => $url->without(array('q', 'page', 'modifyFilter'))->getAbsoluteUrl(),
-            'class'  => ['quicksearch'],
+            'class'  => ['incubator-quicksearch'],
             'method' => 'GET'
         ]);
 
