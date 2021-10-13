@@ -2,6 +2,10 @@
 
 namespace gipfl\IcingaWeb2\Zf1\Db;
 
+use gipfl\ZfDb\Adapter\Adapter as Db;
+use gipfl\ZfDb\Exception\SelectException;
+use gipfl\ZfDb\Expr;
+use gipfl\ZfDb\Select;
 use Icinga\Data\Filter\Filter;
 use Icinga\Data\Filter\FilterAnd;
 use Icinga\Data\Filter\FilterChain;
@@ -25,27 +29,56 @@ class FilterRenderer
     /** @var array */
     private $columnMap;
 
+    /** @var string */
+    private $dbExprClass;
+
     /**
      * FilterRenderer constructor.
      * @param Filter $filter
-     * @param DbAdapter $db
+     * @param Db|DbAdapter $db
      */
-    public function __construct(Filter $filter, DbAdapter $db)
+    public function __construct(Filter $filter, $db)
     {
         $this->filter = $filter;
-        $this->db = $db;
+        if ($db instanceof Db) {
+            $this->db = $db;
+            $this->dbExprClass = Expr::class;
+        } elseif ($db instanceof DbAdapter) {
+            $this->db = $db;
+            $this->dbExprClass = DbExpr::class;
+        } else {
+            throw new RuntimeException('Got no supported ZF1 DB adapter');
+        }
     }
 
     /**
-     * @return DbExpr
+     * @return Expr|DbExpr
      */
     public function toDbExpression()
     {
-        return new DbExpr($this->render());
+        return $this->expr($this->render());
     }
 
-    public static function applyToQuery(Filter $filter, DbSelect $query)
+    /**
+     * @return Expr|DbExpr
+     */
+    protected function expr($content)
     {
+        $class = $this->dbExprClass;
+        return new $class($content);
+    }
+
+    /**
+     * @param Filter $filter
+     * @param Select|DbSelect $query
+     * @return Select|DbSelect
+     */
+    public static function applyToQuery(Filter $filter, $query)
+    {
+        if (! ($query instanceof Select || $query instanceof DbSelect)) {
+            throw new RuntimeException('Got no supported ZF1 Select object');
+        }
+
         if (! $filter->isEmpty()) {
             $renderer = new static($filter, $query->getAdapter());
             $renderer->extractColumnMap($query);
@@ -64,18 +97,21 @@ class FilterRenderer
         }
     }
 
-    protected function extractColumnMap(DbSelect $query)
+    protected function extractColumnMap($query)
     {
         $map = [];
         try {
-            $columns = $query->getPart(DbSelect::COLUMNS);
+            $columns = $query->getPart(Select::COLUMNS);
+        } catch (SelectException $e) {
+            // Will not happen.
+            throw new RuntimeException($e->getMessage());
         } catch (DbSelectException $e) {
             // Will not happen.
             throw new RuntimeException($e->getMessage());
         }
 
         foreach ($columns as $col) {
-            if ($col[1] instanceof DbExpr) {
+            if ($col[1] instanceof Expr || $col[1] instanceof DbExpr) {
                 $map[$col[2]] = (string) $col[1];
             } else {
                 $map[$col[2]] = $col[0] . '.' . $col[1];
@@ -171,7 +207,7 @@ class FilterRenderer
     protected function renderLike($col, $expression)
     {
         if ($expression === '*') {
-            return new DbExpr('TRUE');
+            return $this->expr('TRUE');
         }
 
         return $col . ' LIKE ' . $this->escape($this->escapeWildcards($expression));
@@ -180,7 +216,7 @@ class FilterRenderer
     protected function renderNotLike($col, $expression)
     {
         if ($expression === '*') {
-            return new DbExpr('FALSE');
+            return $this->expr('FALSE');
         }
 
         return sprintf(
@@ -221,7 +257,7 @@ class FilterRenderer
     /**
      * @param Filter $filter
      * @param int $level
-     * @return string|DbExpr
+     * @return string|Expr|DbExpr
      */
     protected function renderFilter(Filter $filter, $level = 0)
     {
@@ -270,13 +306,13 @@ class FilterRenderer
             );
         } elseif ($sign === '=' && strpos($expression, '*') !== false) {
             if ($expression === '*') {
-                return new DbExpr('TRUE');
+                return $this->expr('TRUE');
             }
 
             return $col . ' LIKE ' . $this->escape($this->escapeWildcards($expression));
         } elseif ($sign === '!=' && strpos($expression, '*') !== false) {
             if ($expression === '*') {
-                return new DbExpr('FALSE');
+                return $this->expr('FALSE');
             }
 
             return sprintf(

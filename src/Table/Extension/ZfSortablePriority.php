@@ -4,13 +4,14 @@ namespace gipfl\IcingaWeb2\Table\Extension;
 
 use gipfl\IcingaWeb2\Table\ZfQueryBasedTable;
 use gipfl\IcingaWeb2\IconHelper;
+use gipfl\ZfDb\Exception\SelectException;
+use gipfl\ZfDb\Select;
 use Icinga\Web\Request;
 use Icinga\Web\Response;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Html;
 use ipl\Html\HtmlString;
 use RuntimeException;
-use Zend_Db_Select as ZfSelect;
 use Zend_Db_Select_Exception as ZfDbSelectException;
 
 /**
@@ -107,11 +108,11 @@ trait ZfSortablePriority
         $db = $this->db();
         /** @var $this ZfQueryBasedTable */
         $query = $this->getQuery();
-        $tableParts = $this->getQueryPart(ZfSelect::FROM);
+        $tableParts = $this->getQueryPart(Select::FROM);
         $alias = key($tableParts);
         $table = $tableParts[$alias]['tableName'];
 
-        $whereParts = $this->getQueryPart(ZfSelect::WHERE);
+        $whereParts = $this->getQueryPart(Select::WHERE);
         unset($query);
         if (empty($whereParts)) {
             $where = '';
@@ -247,10 +248,13 @@ trait ZfSortablePriority
     {
         /** @var ZfQueryBasedTable $table */
         $table = $this;
-        /** @var ZfSelect $query */
+        /** @var Select|\Zend_Db_Select $query */
         $query = $table->getQuery();
         try {
             return $query->getPart($part);
+        } catch (SelectException $e) {
+            // Will not happen if $part is correct.
+            throw new RuntimeException($e);
         } catch (ZfDbSelectException $e) {
             // Will not happen if $part is correct.
             throw new RuntimeException($e);

@@ -3,6 +3,8 @@
 namespace gipfl\IcingaWeb2\Zf1\Db;
 
 use gipfl\IcingaWeb2\Data\Paginatable;
+use gipfl\ZfDb\Select;
+use gipfl\ZfDb\Exception\SelectException;
 use Icinga\Application\Benchmark;
 use RuntimeException;
 use Zend_Db_Select as ZfSelect;
@@ -18,9 +20,13 @@ class SelectPaginationAdapter implements Paginatable
 
     private $cachedCountQuery;
 
-    public function __construct(ZfSelect $query)
+    public function __construct($query)
     {
-        $this->query = $query;
+        if ($query instanceof Select || $query instanceof ZfSelect) {
+            $this->query = $query;
+        } else {
+            throw new RuntimeException('Got no supported ZF1 Select object');
+        }
     }
 
     public function getCountQuery()
@@ -60,7 +66,7 @@ class SelectPaginationAdapter implements Paginatable
 
     public function getLimit()
     {
-        return $this->getQueryPart(ZfSelect::LIMIT_COUNT);
+        return $this->getQueryPart(Select::LIMIT_COUNT);
     }
 
     public function setLimit($limit)
@@ -78,13 +84,16 @@ class SelectPaginationAdapter implements Paginatable
 
     public function getOffset()
     {
-        return $this->getQueryPart(ZfSelect::LIMIT_OFFSET);
+        return $this->getQueryPart(Select::LIMIT_OFFSET);
     }
 
     protected function getQueryPart($part)
     {
         try {
             return $this->query->getPart($part);
+        } catch (SelectException $e) {
+            // Will not happen if $part is correct.
+            throw new RuntimeException($e);
         } catch (ZfDbSelectException $e) {
             // Will not happen if $part is correct.
             throw new RuntimeException($e);

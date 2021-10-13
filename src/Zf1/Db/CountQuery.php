@@ -2,22 +2,28 @@
 
 namespace gipfl\IcingaWeb2\Zf1\Db;
 
+use gipfl\ZfDb\Select;
+use RuntimeException;
 use Zend_Db_Select as ZfSelect;
 
 class CountQuery
 {
-    /** @var ZfSelect */
+    /** @var Select|ZfSelect */
     private $query;
 
     private $maxRows;
 
     /**
      * ZfCountQuery constructor.
-     * @param ZfSelect $query
+     * @param Select|ZfSelect $query
      */
-    public function __construct(ZfSelect $query)
+    public function __construct($query)
     {
-        $this->query = $query;
+        if ($query instanceof Select || $query instanceof ZfSelect) {
+            $this->query = $query;
+        } else {
+            throw new RuntimeException('Got no supported ZF1 Select object');
+        }
     }
 
     public function setMaxRows($max)
@@ -55,8 +61,8 @@ class CountQuery
     protected function needsSubQuery()
     {
         return null !== $this->maxRows || $this->hasOneOf([
-            ZfSelect::GROUP,
-            ZfSelect::UNION
+            Select::GROUP,
+            Select::UNION
         ]);
     }
 
@@ -64,7 +70,8 @@ class CountQuery
     {
         $sub = clone($this->query);
         $sub->limit(null, null);
-        $query = new ZfSelect($this->query->getAdapter());
+        $class = $this->query;
+        $query = new $class($this->query->getAdapter());
         $query->from($sub, ['cnt' => 'COUNT(*)']);
         if (null !== $this->maxRows) {
             $sub->limit($this->maxRows + 1);
@@ -76,10 +83,10 @@ class CountQuery
     protected function buildSimpleQuery()
     {
         $query = clone($this->query);
-        $query->reset(ZfSelect::COLUMNS);
-        $query->reset(ZfSelect::ORDER);
-        $query->reset(ZfSelect::LIMIT_COUNT);
-        $query->reset(ZfSelect::LIMIT_OFFSET);
+        $query->reset(Select::COLUMNS);
+        $query->reset(Select::ORDER);
+        $query->reset(Select::LIMIT_COUNT);
+        $query->reset(Select::LIMIT_OFFSET);
         $query->columns(['cnt' => 'COUNT(*)']);
         return $query;
     }

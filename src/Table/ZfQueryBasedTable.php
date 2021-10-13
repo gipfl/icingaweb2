@@ -7,6 +7,8 @@ use gipfl\IcingaWeb2\Url;
 use gipfl\IcingaWeb2\Widget\ControlsAndContent;
 use gipfl\IcingaWeb2\Zf1\Db\FilterRenderer;
 use gipfl\IcingaWeb2\Zf1\Db\SelectPaginationAdapter;
+use gipfl\ZfDb\Adapter\Adapter as Db;
+use gipfl\ZfDb\Select as DbSelect;
 use Icinga\Data\Db\DbConnection;
 use Icinga\Data\Filter\Filter;
 use ipl\Html\DeferredText;
@@ -16,10 +18,10 @@ use Zend_Db_Adapter_Abstract as DbAdapter;
 
 abstract class ZfQueryBasedTable extends QueryBasedTable
 {
-    /** @var DbConnection */
+    /** @var ?DbConnection */
     private $connection;
 
-    /** @var DbAdapter */
+    /** @var DbAdapter|Db */
     private $db;
 
     private $query;
@@ -28,7 +30,7 @@ abstract class ZfQueryBasedTable extends QueryBasedTable
 
     public function __construct($db)
     {
-        if ($db instanceof DbAdapter) {
+        if ($db instanceof Db || $db instanceof DbAdapter) {
             $this->db = $db;
         } elseif ($db instanceof DbConnection) {
             $this->connection = $db;
@@ -99,6 +101,10 @@ abstract class ZfQueryBasedTable extends QueryBasedTable
         return $this->db->fetchAll($this->getQuery());
     }
 
+    /**
+     * @deprecated Might be null, we'll fade it out
+     * @return ?DbConnection
+     */
     public function connection()
     {
         return $this->connection;
@@ -110,7 +116,7 @@ abstract class ZfQueryBasedTable extends QueryBasedTable
     }
 
     /**
-     * @return \Zend_Db_Select
+     * @return DbSelect|\Zend_Db_Select
      */
     public function getQuery()
     {
