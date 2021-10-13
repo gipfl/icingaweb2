@@ -12,6 +12,8 @@
     }
   },
   "require": {
+    "php": ">=5.6",
+    "ext-ctype": "*",
     "ipl/html": ">=0.2.1",
     "gipfl/translation": ">=0.1"
   }
