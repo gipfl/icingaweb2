@@ -62,8 +62,8 @@ div.gipfl-action-bar > ul {
     min-width: 10em;
     position: absolute;
     display: none;
-    color: @text-color-inverted;
-    background-color: @text-color;
+    //color, text-color-inverted);
+    background-color: @body-bg-color;
     border-radius: 0.1em;
     border-top-left-radius: 0;
     box-shadow: 1em 1em 1em 0 rgba(0, 0, 0, 0.2);
@@ -73,7 +73,7 @@ div.gipfl-action-bar > ul {
       padding: 0.3em 0.5em 0.3em 1em;
       margin: 0;
       outline: none;
-      color: @text-color-inverted;
+      color: @icinga-blue;
 
       &:hover {
         text-decoration: underline;
@@ -95,11 +95,11 @@ div.gipfl-action-bar > ul {
     padding: 0.2em 0.5em;
   }
   > li:hover {
-    background-color: @text-color;
+    background-color: @tr-active-color;
     border-top-left-radius: 0.1em;
     border-top-right-radius: 0.1em;
     & > a {
-      color: @text-color-inverted;
+      color: @icinga-blue;
       text-decoration: none;
     }
   }
