@@ -38,6 +38,7 @@ class SelectPaginationAdapter implements Paginatable
         return $this->countQuery;
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         $queryString = (string) $this->getCountQuery();

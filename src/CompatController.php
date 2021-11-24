@@ -4,6 +4,7 @@ namespace gipfl\IcingaWeb2;
 
 use gipfl\IcingaWeb2\Controller\Extension\AutoRefreshHelper;
 use gipfl\IcingaWeb2\Controller\Extension\ConfigHelper;
+use gipfl\Translation\StaticTranslator;
 use gipfl\Translation\TranslationHelper;
 use gipfl\IcingaWeb2\Controller\Extension\ControlsAndContentHelper;
 use gipfl\IcingaWeb2\Widget\ControlsAndContent;
@@ -276,7 +277,7 @@ class CompatController extends Zend_Controller_Action implements ControlsAndCont
         $moduleName = $this->getModuleName();
         $domain = $moduleName !== 'default' ? $moduleName : 'icinga';
         $this->view->translationDomain = $domain;
-        TranslationHelper::setTranslator(new Translator($domain));
+        StaticTranslator::set(new Translator($domain));
     }
 
     public function init()
