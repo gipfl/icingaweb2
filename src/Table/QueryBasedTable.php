@@ -3,6 +3,7 @@
 namespace gipfl\IcingaWeb2\Table;
 
 use Countable;
+use gipfl\Format\LocalDateFormat;
 use gipfl\IcingaWeb2\Data\Paginatable;
 use gipfl\IcingaWeb2\Zf1\Db\FilterRenderer;
 use gipfl\IcingaWeb2\Table\Extension\QuickSearch;
@@ -40,6 +41,8 @@ abstract class QueryBasedTable extends Table implements Countable
     protected $paginator;
 
     private $isUsEnglish;
+
+    private $dateFormatter;
 
     protected $searchColumns = [];
 
@@ -184,10 +187,14 @@ abstract class QueryBasedTable extends Table implements Countable
         return $this::row([$row]);
     }
 
+    /**
+     * @deprecated
+     * @return bool
+     */
     protected function isUsEnglish()
     {
         if ($this->isUsEnglish === null) {
-            $this->isUsEnglish = in_array(setlocale(LC_ALL, 0), array('en_US.UTF-8', 'C'));
+            $this->isUsEnglish = in_array(setlocale(LC_ALL, 0), ['en_US', 'en_US.UTF-8', 'C']);
         }
 
         return $this->isUsEnglish;
@@ -198,11 +205,7 @@ abstract class QueryBasedTable extends Table implements Countable
      */
     protected function renderDayIfNew($timestamp)
     {
-        if ($this->isUsEnglish()) {
-            $day = date('l, jS F Y', $timestamp);
-        } else {
-            $day = strftime('%A, %e. %B, %Y', $timestamp);
-        }
+        $day = $this->getDateFormatter()->getFullDay($timestamp);
 
         if ($this->lastDay !== $day) {
             $this->nextHeader()->add(
@@ -265,5 +268,14 @@ abstract class QueryBasedTable extends Table implements Countable
         }
 
         return $this;
+    }
+
+    protected function getDateFormatter()
+    {
+        if ($this->dateFormatter === null) {
+            $this->dateFormatter = new LocalDateFormat();
+        }
+
+        return $this->dateFormatter;
     }
 }

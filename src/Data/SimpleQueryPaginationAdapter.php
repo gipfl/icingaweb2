@@ -15,6 +15,7 @@ class SimpleQueryPaginationAdapter implements Paginatable
         $this->query = $query;
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         Benchmark::measure('Running count() for pagination');
