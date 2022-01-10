@@ -12,6 +12,7 @@ use Icinga\Data\Filter\FilterChain;
 use Icinga\Data\Filter\FilterExpression;
 use Icinga\Data\Filter\FilterNot;
 use Icinga\Data\Filter\FilterOr;
+use Icinga\Data\SimpleQuery;
 use InvalidArgumentException;
 use RuntimeException;
 use Zend_Db_Adapter_Abstract as DbAdapter;
@@ -70,11 +71,15 @@ class FilterRenderer
 
     /**
      * @param Filter $filter
-     * @param Select|DbSelect $query
-     * @return Select|DbSelect
+     * @param Select|DbSelect|SimpleQuery $query
+     * @return Select|DbSelect|SimpleQuery
      */
     public static function applyToQuery(Filter $filter, $query)
     {
+        if ($query instanceof SimpleQuery) {
+            $query->applyFilter($filter);
+            return $query;
+        }
         if (! ($query instanceof Select || $query instanceof DbSelect)) {
             throw new RuntimeException('Got no supported ZF1 Select object');
         }
