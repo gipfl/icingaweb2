@@ -2,7 +2,6 @@
 
 namespace gipfl\IcingaWeb2;
 
-use Icinga\Util\Translator as WebTranslator;
 use gipfl\Translation\TranslatorInterface;
 
 class Translator implements TranslatorInterface
@@ -17,6 +16,11 @@ class Translator implements TranslatorInterface
 
     public function translate($string)
     {
-        return WebTranslator::translate($string, $this->domain);
+        $res = dgettext($this->domain, $string);
+        if ($res === $string && $this->domain !== 'icinga') {
+            return dgettext('icinga', $string);
+        }
+
+        return $res;
     }
 }
