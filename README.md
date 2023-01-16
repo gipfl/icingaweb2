@@ -7,6 +7,13 @@ and [ipl\\html](https://github.com/Icinga/ipl-html).
 Changes
 -------
 
+### v0.10.0
+* support db expressions in filter renderer
+* fix action list extension dropdown background
+
+### v0.9.0
+* fix quicksearch background and icon positioning
+
 ### v0.8.0
 * drop dependency on deprecated Icinga Web 2 translator
 
