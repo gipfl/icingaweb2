@@ -62,9 +62,8 @@ div.gipfl-action-bar > ul {
     min-width: 10em;
     position: absolute;
     display: none;
-    background-color: @tr-active-color;
-    border-radius: 0.1em;
-    border-top-left-radius: 0;
+    background-color: @menu-flyout-bg-color;
+    border: 1px solid @gray-light;
     box-shadow: 0.3em 0.3em 0.3em 0 rgba(0, 0, 0, 0.2);
 
     a {
@@ -72,7 +71,7 @@ div.gipfl-action-bar > ul {
       padding: 0.3em 0.5em 0.3em 1em;
       margin: 0;
       outline: none;
-      color: @icinga-blue;
+      color: @menu-flyout-color;
 
       &:hover {
         text-decoration: underline;
