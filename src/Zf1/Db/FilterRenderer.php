@@ -118,6 +118,7 @@ class FilterRenderer
         foreach ($columns as $col) {
             if ($col[1] instanceof Expr || $col[1] instanceof DbExpr) {
                 $map[$col[2]] = (string) $col[1];
+                $map[$col[2]] = $col[1];
             } else {
                 $map[$col[2]] = $col[0] . '.' . $col[1];
             }
@@ -179,7 +180,7 @@ class FilterRenderer
     protected function renderFilterExpression(FilterExpression $filter)
     {
         $col = $this->lookupColumnAlias($filter->getColumn());
-        if (! ctype_digit($col)) {
+        if (! $col instanceof Expr && ! $col instanceof DbExpr && ! ctype_digit($col)) {
             $col = $this->db->quoteIdentifier($col);
         }
         $sign = $filter->getSign();
