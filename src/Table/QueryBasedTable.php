@@ -178,7 +178,9 @@ abstract class QueryBasedTable extends Table implements Countable
             }
             // Hint: do not fetch the body first, the row might want to replace it
             $tr = $this->renderRow($row);
-            $this->add($tr);
+            if ($tr !== null) {
+                $this->add($tr);
+            }
         }
     }
 
