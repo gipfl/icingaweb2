@@ -7,6 +7,10 @@ and [ipl\\html](https://github.com/Icinga/ipl-html).
 Changes
 -------
 
+### v0.11.0
+* support PHP v8.4
+* allow table implementors to cleanly skip rows
+
 ### v0.10.0
 * support db expressions in filter renderer
 * fix action list extension dropdown background
