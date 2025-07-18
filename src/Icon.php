@@ -20,7 +20,7 @@ class Icon extends BaseHtmlElement
      *
      * @return static
      */
-    public static function create($name, array $attributes = null)
+    public static function create($name, ?array $attributes = null)
     {
         return new static($name, $attributes);
     }

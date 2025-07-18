@@ -26,7 +26,7 @@ class Img extends BaseHtmlElement
      *
      * @return static
      */
-    public static function create($url, $urlParams = null, array $attributes = null)
+    public static function create($url, $urlParams = null, ?array $attributes = null)
     {
         /** @var Img $img */
         $img = new static();

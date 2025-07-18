@@ -21,7 +21,7 @@ interface ControlsAndContent
      * @param HtmlDocument|null $actionBar
      * @return HtmlDocument
      */
-    public function actions(HtmlDocument $actionBar = null);
+    public function actions(?HtmlDocument $actionBar = null);
 
     /**
      * @return Content

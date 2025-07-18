@@ -43,7 +43,7 @@ trait ControlsAndContentHelper
      * @param Tabs|null $tabs
      * @return Tabs
      */
-    public function tabs(Tabs $tabs = null)
+    public function tabs(?Tabs $tabs = null)
     {
         if ($tabs === null) {
             return $this->controls()->getTabs();
@@ -57,7 +57,7 @@ trait ControlsAndContentHelper
      * @param HtmlDocument|null $actionBar
      * @return HtmlDocument
      */
-    public function actions(HtmlDocument $actionBar = null)
+    public function actions(?HtmlDocument $actionBar = null)
     {
         if ($actionBar === null) {
             return $this->controls()->getActionBar();

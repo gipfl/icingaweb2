@@ -21,7 +21,7 @@ class Link extends BaseHtmlElement
      * @param null $urlParams
      * @param array|null $attributes
      */
-    public function __construct($content, $url, $urlParams = null, array $attributes = null)
+    public function __construct($content, $url, $urlParams = null, ?array $attributes = null)
     {
         $this->setContent($content);
         $this->setAttributes($attributes);
@@ -37,7 +37,7 @@ class Link extends BaseHtmlElement
      *
      * @return static
      */
-    public static function create($content, $url, $urlParams = null, array $attributes = null)
+    public static function create($content, $url, $urlParams = null, ?array $attributes = null)
     {
         $link = new static($content, $url, $urlParams, $attributes);
         return $link;
